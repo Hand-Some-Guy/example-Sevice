@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        IMAGE_NAME = 'rlaehgns78/go-rest-api'
+        IMAGE_NAME = 'rlaehgns0714/go-rest-api'
         IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
     stages {
