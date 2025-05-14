@@ -98,7 +98,7 @@ pipeline {
         }
         success {
             emailext (
-                to: 'your.email@gmail.com',
+                to: 'asd561298@gmail.com',
                 subject: "SUCCESS: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                 body: "Image pushed: ${IMAGE_NAME}:${IMAGE_TAG}<br>Check: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>",
                 mimeType: 'text/html'
@@ -106,7 +106,7 @@ pipeline {
         }
         failure {
             emailext (
-                to: 'your.email@gmail.com',
+                to: 'asd561298@gmail.com',
                 subject: "FAILURE: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                 body: "Build failed. Check: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>",
                 mimeType: 'text/html'
