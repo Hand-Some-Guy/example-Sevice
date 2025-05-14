@@ -74,15 +74,18 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                // Docker 이미지 빌드
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                script {
+                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                }
             }
         }
         stage('Push to Docker Hub') {
             steps {
-                // Docker Hub 로그인 및 푸시
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+                        docker.image("${IMAGE_NAME}:${IMAGE_TAG}").push()
+                    }
+                }
             }
         }
     }
