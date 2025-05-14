@@ -61,14 +61,15 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Docker Hub 자격 증명 ID
-        IMAGE_NAME = 'yourusername/go-rest-api' // Docker Hub 이미지 이름
+        IMAGE_NAME = 'rlaehgns78/go-rest-api' // Docker Hub 이미지 이름
         IMAGE_TAG = "${env.BUILD_NUMBER}" // 빌드 번호를 태그로 사용
     }
     stages {
         stage('Checkout') {
             steps {
-                // GitHub 저장소에서 코드 가져오기
-                git branch: 'main', url: 'https://github.com/Hand-Some-Guy/example-Sevice.git'
+                git branch: 'main',
+                    credentialsId: 'github-credentials',
+                    url: 'https://github.com/Hand-Some-Guy/example-Sevice.git'
             }
         }
         stage('Build Docker Image') {
