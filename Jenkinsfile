@@ -15,7 +15,10 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                script {
+                    // Docker 이미지 빌드
+                    def dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                }
             }
         }
         stage('Push to Docker Hub') {
