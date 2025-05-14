@@ -1,4 +1,4 @@
-## go 언어 멀티 스테이션 빌드
+## 빌드 스테이션 
 FROM golang:1.23 AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
