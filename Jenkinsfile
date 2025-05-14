@@ -60,9 +60,8 @@
 pipeline {
     agent any
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Docker Hub 자격 증명 ID
-        IMAGE_NAME = 'rlaehgns78/go-rest-api' // Docker Hub 이미지 이름
-        IMAGE_TAG = "${env.BUILD_NUMBER}" // 빌드 번호를 태그로 사용
+        IMAGE_NAME = 'rlaehgns78/go-rest-api'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
     stages {
         stage('Checkout') {
@@ -70,18 +69,21 @@ pipeline {
                 git branch: 'main',
                     credentialsId: 'github-credentials',
                     url: 'https://github.com/Hand-Some-Guy/example-Sevice.git'
+                sh 'ls -la' // 디버깅용
             }
         }
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    // Docker 이미지 빌드
+                    def dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
                 }
             }
         }
         stage('Push to Docker Hub') {
             steps {
                 script {
+                    // Docker Hub 인증 및 푸시
                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
                         docker.image("${IMAGE_NAME}:${IMAGE_TAG}").push()
                     }
@@ -91,14 +93,24 @@ pipeline {
     }
     post {
         always {
-            // 빌드 후 로컬 이미지 정리
+            // 로컬 이미지 정리
             sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG} || true"
         }
         success {
-            echo "Docker 이미지 ${IMAGE_NAME}:${IMAGE_TAG}가 성공적으로 푸시되었습니다."
+            emailext (
+                to: 'your.email@gmail.com',
+                subject: "SUCCESS: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: "Image pushed: ${IMAGE_NAME}:${IMAGE_TAG}<br>Check: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>",
+                mimeType: 'text/html'
+            )
         }
         failure {
-            echo "빌드 또는 푸시에 실패했습니다."
+            emailext (
+                to: 'your.email@gmail.com',
+                subject: "FAILURE: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: "Build failed. Check: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>",
+                mimeType: 'text/html'
+            )
         }
     }
 }
