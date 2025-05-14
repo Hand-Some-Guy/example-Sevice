@@ -24,9 +24,10 @@ func NewDeviceService(deviceRepo repositories.DeviceRepository, firmwareRepo rep
 	}
 }
 
-func (s *deviceService) CreateDevice(id, fwID string) (*models.Device, error) {
+func (s *deviceService) CreateDevice(id, serviceType string) (*models.Device, error) {
+	
 	// 최신 펌웨어 조회
-	firmware, err := s.firmwareRepo.FindByID(fwID)
+	firmware, err := s.firmwareRepo.FindByService(models.Sevice(serviceType))
 	if err != nil {
 		return nil, fmt.Errorf("failed to find firmware: %w", err)
 	}

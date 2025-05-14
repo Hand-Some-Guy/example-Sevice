@@ -21,10 +21,14 @@ func (c *DeviceController) CreateDevice(ctx *gin.Context) {
 		ID          string `json:"id" binding:"required"`
 		ServiceType string `json:"service_type" binding:"required"`
 	}
+
+	// 응답 형식 객체 바인드 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
+
+	// 
 	device, err := c.service.CreateDevice(req.ID, req.ServiceType)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
