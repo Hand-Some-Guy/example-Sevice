@@ -36,21 +36,17 @@ func NewUser(id, pw string) (*User, error) {
 }
 
 // Authenticate는 사용자 인증을 수행
-func (u *User) Authenticate(id, pw string) bool {
+func (u *User) Authenticate(pw string) bool {
 	if u.isLocked {
 		return false
 	}
-
-	if bcrypt.CompareHashAndPassword([]byte(u.pwHash), []byte(pw)) != nil {
-        return false
-    }
-
-	u.isLocked = false
-
-	return true
+	return bcrypt.CompareHashAndPassword([]byte(u.pwHash), []byte(pw)) == nil
 }
 
 func (u *User) Lock() {
     u.isLocked = true
 }
 
+func (u *User) GetID() string {
+	return u.id
+}
