@@ -1,56 +1,78 @@
 package models
 
 import (
-    "fmt"
+	"fmt"
 )
 
+type Sevice string
 
+const (
+	NEW Sevice = "NEW"
+	OLD Sevice = "OLD"
+)
+
+type DeviceStatus string
+
+const (
+	Pending   DeviceStatus = "PENDING"
+	Completed DeviceStatus = "COMPLETED"
+	Failed    DeviceStatus = "FAILED"
+)
 
 type Device struct {
-    id              string
-    firmwareID      string
-    firmwareVersion string
-    status          DeviceStatus
+	ID              string       `json:"id"`
+	Service         Sevice       `json:"service"`
+	FirmwareID      string       `json:"firmwareID"`
+	FirmwareVersion string       `json:"firmwareVersion"`
+	Status          DeviceStatus `json:"status"`
 }
 
-func NewDevice(id, firmwareID, firmwareVersion string) (*Device, error) {
-    if id == "" {
-        return nil, fmt.Errorf("device ID cannot be empty")
-    }
-    if firmwareID == "" {
-        return nil, fmt.Errorf("firmware ID cannot be empty")
-    }
-    if firmwareVersion == "" {
-        return nil, fmt.Errorf("firmware version cannot be empty")
-    }
-    return &Device{
-        id:              id,
-        firmwareID:      firmwareID,
-        firmwareVersion: firmwareVersion,
-        status:          Pending,
-    }, nil
+func NewDevice(id, serviceType, firmwareID, firmwareVersion string) (*Device, error) {
+	if id == "" {
+		return nil, fmt.Errorf("device ID cannot be empty")
+	}
+	if serviceType != string(NEW) && serviceType != string(OLD) {
+		return nil, fmt.Errorf("invalid service type: %s", serviceType)
+	}
+	if firmwareID == "" {
+		return nil, fmt.Errorf("firmware ID cannot be empty")
+	}
+	if firmwareVersion == "" {
+		return nil, fmt.Errorf("firmware version cannot be empty")
+	}
+	return &Device{
+		ID:              id,
+		Service:         Sevice(serviceType),
+		FirmwareID:      firmwareID,
+		FirmwareVersion: firmwareVersion,
+		Status:          Pending,
+	}, nil
 }
 
 func (d *Device) SetStatus(status DeviceStatus) error {
-    if status != Pending && status != Completed && status != Failed {
-        return fmt.Errorf("invalid status: %s", status)
-    }
-    d.status = status
-    return nil
+	if status != Pending && status != Completed && status != Failed {
+		return fmt.Errorf("invalid status: %s", status)
+	}
+	d.Status = status
+	return nil
 }
 
 func (d *Device) GetID() string {
-    return d.id
+	return d.ID
+}
+
+func (d *Device) GetService() Sevice {
+	return d.Service
 }
 
 func (d *Device) GetFirmwareID() string {
-    return d.firmwareID
+	return d.FirmwareID
 }
 
 func (d *Device) GetFirmwareVersion() string {
-    return d.firmwareVersion
+	return d.FirmwareVersion
 }
 
 func (d *Device) GetStatus() DeviceStatus {
-    return d.status
+	return d.Status
 }

@@ -9,7 +9,7 @@ import (
 type DeviceService interface {
 	CreateDevice(id, serviceType string) (*models.Device, error)
 	GetDevice(id string) (*models.Device, error)
-	ChangeDeviceState(id string, state models.DeviceStatus) error
+	ChangeDeviceState(id string, status models.DeviceStatus) error
 }
 
 type deviceService struct {
@@ -25,18 +25,14 @@ func NewDeviceService(deviceRepo repositories.DeviceRepository, firmwareRepo rep
 }
 
 func (s *deviceService) CreateDevice(id, serviceType string) (*models.Device, error) {
-	
-	// 최신 펌웨어 조회
 	firmware, err := s.firmwareRepo.FindByService(models.Sevice(serviceType))
 	if err != nil {
 		return nil, fmt.Errorf("failed to find firmware: %w", err)
 	}
-	// 디바이스 생성
-	device, err := models.NewDevice(id, firmware.GetID(), firmware.GetVersion())
+	device, err := models.NewDevice(id, serviceType, firmware.GetID(), firmware.GetVersion())
 	if err != nil {
 		return nil, fmt.Errorf("failed to create device: %w", err)
 	}
-	// 디바이스 저장
 	if err := s.deviceRepo.Save(device); err != nil {
 		return nil, fmt.Errorf("failed to save device: %w", err)
 	}
@@ -51,12 +47,12 @@ func (s *deviceService) GetDevice(id string) (*models.Device, error) {
 	return device, nil
 }
 
-func (s *deviceService) ChangeDeviceState(id string, state models.DeviceStatus) error {
+func (s *deviceService) ChangeDeviceState(id string, status models.DeviceStatus) error {
 	device, err := s.deviceRepo.FindByID(id)
 	if err != nil {
 		return fmt.Errorf("failed to get device: %w", err)
 	}
-	if err := device.SetStatus(state); err != nil {
+	if err := device.SetStatus(status); err != nil {
 		return fmt.Errorf("failed to change state: %w", err)
 	}
 	if err := s.deviceRepo.Save(device); err != nil {
