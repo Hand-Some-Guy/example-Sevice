@@ -4,13 +4,6 @@ import (
 	"fmt"
 )
 
-type Sevice string
-
-const (
-	NEW Sevice = "NEW"
-	OLD Sevice = "OLD"
-)
-
 type Firmware struct {
 	ID      string `json:"id"`
 	Service Sevice `json:"service"`
