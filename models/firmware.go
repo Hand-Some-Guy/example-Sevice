@@ -2,9 +2,7 @@ package models
 
 import (
     "fmt"
-    "path/filepath"
-    "regexp"
-    "strings"
+
 )
 
 type Firmware struct {
