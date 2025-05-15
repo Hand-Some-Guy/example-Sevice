@@ -3,7 +3,6 @@ package controllers
 import (
 	"log"
 	"net/http"
-	"instance-20250512-083940/models"
 	"instance-20250512-083940/services"
 
 	"github.com/gin-gonic/gin"
