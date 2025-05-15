@@ -4,21 +4,6 @@ import (
 	"fmt"
 )
 
-type Sevice string
-
-const (
-	NEW Sevice = "NEW"
-	OLD Sevice = "OLD"
-)
-
-type DeviceStatus string
-
-const (
-	Pending   DeviceStatus = "PENDING"
-	Completed DeviceStatus = "COMPLETED"
-	Failed    DeviceStatus = "FAILED"
-)
-
 type Device struct {
 	ID              string       `json:"id"`
 	Service         Sevice       `json:"service"`
